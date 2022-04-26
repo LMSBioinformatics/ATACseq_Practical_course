@@ -1,0 +1,37 @@
+---
+title: "Peak and motif analysis"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+
+```{r, tidy=T, message=F, warning=F}
+
+library(rtracklayer)
+
+peaks <- import("data/SRR3536937_1.trim.PE2SE.nodup.tn5_SRR3536938_1.trim.PE2SE.nodup.tn5.pf.narrowPeak.gz")
+head(as.data.frame(peaks))
+
+```
+
+```{r, tidy=T, message=F, warning=F}
+
+library(ChIPseeker)
+library(org.Mm.eg.db)
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+
+peak_annotation <- annotatePeak(peaks, 
+                                TxDb = TxDb.Mmusculus.UCSC.mm10.knownGene,
+                                annoDb = "org.Mm.eg.db")
+
+plotAnnoBar(peak_annotation)
+vennpie(peak_annotation)
+upsetplot(peak_annotation)
+upsetplot(peak_annotation, vennpie = T)
+plotDistToTSS(peak_annotation)
+hist(peak_annotation@anno$distanceToTSS, breaks = 2000, xlim = c(-50000, 50000))
+
+
+```
