@@ -35,3 +35,11 @@ hist(peak_annotation@anno$distanceToTSS, breaks = 2000, xlim = c(-50000, 50000))
 
 
 ```
+
+```{r, tidy=T, message=F, warning=F}
+
+library(clusterProfiler)
+
+assignedGenes <- peak_annotation
+
+```
