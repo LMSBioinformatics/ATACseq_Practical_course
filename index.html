@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>ATACseq Practical by Computational Regulatory Genomics group</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">ATACseq Practical</h1>
+      <h2 class="project-tagline"></h2>
+      <a href="https://github.com/LMSBioinformatics/ATACseq_Practical_course" class="btn">View on GitHub</a>
+      <a href="https://github.com/LMSBioinformatics/ATACseq_Practical_course/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/LMSBioinformatics/ATACseq_Practical_course/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="chip-seq-short-course" class="anchor" href="#chip-seq-short-course" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ATACseq Practical</h1>
+
+<h2>
+<a id="the-course" class="anchor" href="#the-course" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Course</h2>
+
+<p>This course introduces some of the fundamental concepts and tools of ATACseq analysis in R/Bioconductor.</p>
+<p>Each section is presented as both HTMl and Rpres markdown ( to allow for intergration of the presentation in the RStudio enviroment itself). Exercises and answer sheets are included after all subsections to practice techniques and provide future reference examples.</p>
+<p>Course material and exercises are available to view as rendered HTML slides at <a href="https://lmsbioinformatics.github.io/ATACseq_Practical_course/"><a href="https://lmsbioinformatics.github.io/ATACseq_Practical_course/" class="uri">https://lmsbioinformatics.github.io/ATACseq_Practical_course/</a></a>.<br />All material is available to download under GPL v3 license.</p>
+
+<p>For  information on other courses run by our team see our <a href="http://bioinformatics.lms.mrc.ac.uk/LMStraining.html">training page</a>.</p>
+
+<h2>
+<a id="the-team" class="anchor" href="#the-team" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Computational Regulatory Genomics group</h2>
+
+<p>This course was created and conducted by the MRC London Institute of Medical Sciences Computational Regulatory Genomics at Imperial College London, Hammersmith Hospital.<br>
+For more information on the research group see <a href="https://lms.mrc.ac.uk/research-group/computational-regulatory-genomics/">web page</a>.</p>
+
+<p>This course is free for MRC LMS and Imperial staff and students.</p>
+
+<h2>
+<a id="setting-up" class="anchor" href="#setting-up" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting up.</h2>
+
+<h4>
+<a id="install-r" class="anchor" href="#install-r" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install R.</h4>
+
+<p>R can be installed from the R-project website.<br>
+R 4.1 or higher is required for this course.</p>
+
+<p><a href="http://www.r-project.org/">http://www.r-project.org/</a></p>
+
+<h4>
+<a id="install-rstudio" class="anchor" href="#install-rstudio" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install RStudio.</h4>
+
+<p>RStudio can be installed from the R-project website. </p>
+
+<p><a href="http://www.rstudio.com/">http://www.rstudio.com/</a></p>
+
+<h4>
+<a id="install-required-packages" class="anchor" href="#install-required-packages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install required packages.</h4>
+
+<p>Having downloaded R and RStudio, some additional packages are required.<br>
+To install these,</p>
+
+
+
+<h4>
+<a id="download-the-material" class="anchor" href="#download-the-material" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Download the material</h4>
+
+<p>The material can either be downloaded as a <a href="https://github.com/LMSBioinformatics/ATACseq_Practical_course/archive/master.zip">zip</a></p>
+
+<pre>
+wget https://github.com/LMSBioinformatics/ATACseq_Practical_course/archive/master.zip ./
+</pre>
+
+<p>or checked out from our Github repository
+<a href="https://github.com/LMSBioinformatics/ATACseq_Practical_course/">https://github.com/LMSBioinformatics/ATACseq_Practical_course/</a></p>
+
+<h2>
+<a id="ChIP-seq-Short-course1" class="anchor" href="#ChIP-seq-Short-course" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fragment_length_distribution</h2>
+
+<h4>
+<a id="ChIPseq" class="anchor" href="#ChIPseq" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fragment_length_distribution</h4>
+
+
+
+Link to HTML presentation - <a href="https://lmsbioinformatics.github.io/ATACseq_Practical_course/01_Fragment_length_distribution.html#/">Fragment_length_distribution slides</a><br>
+
+</p>
+<iframe src="https://lmsbioinformatics.github.io/ATACseq_Practical_course/01_Fragment_length_distribution.html#/" width="100%" height="400"></iframe>
+
+
+<h2>
+<a id="ChIP-seq-Short-course2" class="anchor" href="#ChIP-seq-Short-course" aria-hidden="true"><span class="octicon octicon-link"></span></a>Peak_and_motif_analysis</h2>
+
+<h4>
+<a id="ChIPseq2" class="anchor" href="#ChIPseq" aria-hidden="true"><span class="octicon octicon-link"></span></a>Peak_and_motif_analysis</h4>
+
+
+Link to HTML presentation - <a href="https://lmsbioinformatics.github.io/ATACseq_Practical_course/02_Peak_and_motif_analysis.html#/">Peak_and_motif_analysis slides</a><br>
+
+</p>
+
+
+
+<iframe src="https://lmsbioinformatics.github.io/ATACseq_Practical_course/02_Peak_and_motif_analysis.html#/" width="100%" height="400"></iframe>
+
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/LMSBioinformatics/ATACseq_Practical_course">ATACseq_Practical_course</a> is maintained by <a href="https://github.com/LMSBioinformatics">mrclms</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+
+  </body>
+</html>
