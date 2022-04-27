@@ -1,7 +1,7 @@
 ---
 title: "Fragment length distribution"
 author: "`Computational Regulatory Genomics`"
-date: "`r format(Sys.time(), '%B %Y')`"
+date: "April 2022"
 output:
   slidy_presentation:
     highlight: tango
@@ -21,7 +21,8 @@ potential remaining sequencing adapters and low quality reads from the input
 `cutadapt` and its wrap-up program `trimgalore`. Here is the example of adapter 
 trimming command:
 
-```{bash, eval=F}
+
+```bash
 
 cutadapt -m 5 -e 0.10 -a CTGTCTCTTATA -A CTGTCTCTTATA -o \ 
 ${IN_FASTQ_R1$.fastq}.trim.fq -p  ${IN_FASTQ_R2$.fastq}.trim.fq \ 
@@ -41,7 +42,8 @@ all the following mapping jobs to that genome. Here is a mock command for
 creating the genome index, mapping the reads to the genome, and creating the
 bam index file from a sorted `.bam` file:
 
-```{bash, eval=F}
+
+```bash
 
 bowtie2-build hg38.fasta hg38_idx
 bowtie2   -X2000 --mm --local --threads 2 -x hg38_idx \
@@ -70,7 +72,8 @@ With the flag `-F 1804` we are removing the following reads:
 To fix the mates with `samtools fixmate` reads needs to be sorted by name 
 (`sambamba -n` option), and we convert it to sorted by position again.
 
-```{bash, eval=F}
+
+```bash
 
 samtools view -F 1804 -f 2 -q 30 -u out.bam |\ 
 sambamba sort -t 2 -n /dev/stdin -o out.dupmark.bam 
@@ -104,8 +107,8 @@ We will now start exploring the mapped ATAC-seq reads from the mouse embryonic
 stem-cell sample. The `.bam` file and its index can be downloaded from 
 [here](data.genereg.net/damir/CBW_2022/), and read in the R session.
 
-```{r, tidy=TRUE, echo=T, warning=F, message=F}
 
+```r
 input_bam <- "~/Downloads/mESC_chr1.bam"
 # just a test script to see how much memory it uses
 
@@ -122,23 +125,61 @@ bam_root <- str_replace(input_bam, "\\.bam", "")
 bamFile <- BamFile(file = input_bam, yieldSize = 50000)
 open(bamFile)
 print("Opened bam file")
+```
 
+```
+## [1] "Opened bam file"
+```
+
+```r
 dataIn <- DataFrame()
 print("Created an empty GRanges object. Starting conversion...")
+```
 
+```
+## [1] "Created an empty GRanges object. Starting conversion..."
+```
+
+```r
 while (length(chunk <- readGAlignmentPairs(bamFile))) {
-  dataIn <- rbind(dataIn, as.data.frame(as(object = chunk, Class = "GRanges")))
+    dataIn <- rbind(dataIn, as.data.frame(as(object = chunk, Class = "GRanges")))
 }
 
 print("Converted! Sorting...")
+```
+
+```
+## [1] "Converted! Sorting..."
+```
+
+```r
 fragments <- as(object = dataIn, Class = "GRanges")
 seqlevels(fragments) = seqlevels(BSgenome.Mmusculus.UCSC.mm10)
-seqinfo(fragments)   = seqinfo(BSgenome.Mmusculus.UCSC.mm10)
-genome(fragments)    = genome(BSgenome.Mmusculus.UCSC.mm10)
+seqinfo(fragments) = seqinfo(BSgenome.Mmusculus.UCSC.mm10)
+genome(fragments) = genome(BSgenome.Mmusculus.UCSC.mm10)
 head(fragments)
+```
 
+```
+## GRanges object with 6 ranges and 0 metadata columns:
+##       seqnames          ranges strand
+##          <Rle>       <IRanges>  <Rle>
+##   [1]     chr1 3005848-3006110      -
+##   [2]     chr1 3006434-3006965      -
+##   [3]     chr1 3007324-3007389      -
+##   [4]     chr1 3007470-3007887      -
+##   [5]     chr1 3008720-3008771      +
+##   [6]     chr1 3008851-3008928      +
+##   -------
+##   seqinfo: 239 sequences (1 circular) from mm10 genome
+```
+
+```r
 print("Data succesfuly converted to GRanges. Moving on")
+```
 
+```
+## [1] "Data succesfuly converted to GRanges. Moving on"
 ```
 
 # 3. Exploring frangment length distribution
@@ -151,37 +192,44 @@ we can split the fragments in three groups:
  *  Mononucleosome fragments  
  *  Polynucleosome fragments  
 
-```{r, tidy=T, echo=T}
 
+```r
 print("Ploting the insert size histogram...")
+```
 
-fragments.length.histogram = hist(width(fragments), plot = F,
-                                  breaks=seq(0.5, 2000.5))
+```
+## [1] "Ploting the insert size histogram..."
+```
 
-#pdf(paste(bam_root,'.fragment_length_distribution.pdf', sep = ""))
+```r
+fragments.length.histogram = hist(width(fragments), plot = F, breaks = seq(0.5, 2000.5))
 
-plot(x=fragments.length.histogram$mids, y=fragments.length.histogram$counts,
-     xlim=c(0,800), type="l", xlab="ATAC fragment length", ylab="density")
+# pdf(paste(bam_root,'.fragment_length_distribution.pdf', sep = ''))
+
+plot(x = fragments.length.histogram$mids, y = fragments.length.histogram$counts,
+    xlim = c(0, 800), type = "l", xlab = "ATAC fragment length", ylab = "density")
 
 abline(v = 40, col = "red")
 abline(v = 145, col = "red")
 abline(v = 150, col = "blue")
 abline(v = 320, col = "blue")
 abline(v = 330, col = "green")
+```
 
-splitReads <- function(x, minLen, maxLen){
-  
-  x = x[width(x) >= minLen]
-  x = x[width(x) <= maxLen]
-  return(x)
-  
+![](01_Fragment_length_distribution_files/figure-slidy/unnamed-chunk-5-1.png)<!-- -->
+
+```r
+splitReads <- function(x, minLen, maxLen) {
+
+    x = x[width(x) >= minLen]
+    x = x[width(x) <= maxLen]
+    return(x)
+
 }
 
 frag.nsomeFree = splitReads(fragments, 40, 145)
 frag.monoNsome = splitReads(fragments, 150, 320)
 frag.polyNsome = splitReads(fragments, 330, 800)
-
-
 ```
 
 # 4. Exploring signals around annotated TSS
@@ -198,51 +246,64 @@ for all the promoters at a specific position as an aggregate or a meta-plot.
 Finally, it is often convenient to sort the sequence in the heatmap in a 
 specific order to reveal the trends in the data. 
 
-```{r, tidy=TRUE, message=F, warning=FALSE}
 
+```r
 library(TxDb.Mmusculus.UCSC.mm10.knownGene)
 
-mm_promoters <- promoters(genes(TxDb.Mmusculus.UCSC.mm10.knownGene),
-                          upstream = 500, downstream = 500)
+mm_promoters <- promoters(genes(TxDb.Mmusculus.UCSC.mm10.knownGene), upstream = 500,
+    downstream = 500)
 mm_promoters_chr1 <- mm_promoters[seqnames(mm_promoters) == "chr1"]
 
 library(genomation)
 
-promoter_atac_SM <- ScoreMatrixList(
-  targets = list(NFR = coverage(frag.nsomeFree),
-                 Mononucleosome = coverage(frag.monoNsome),
-                 Polynuclesome = coverage(frag.polyNsome)),
-  windows = mm_promoters_chr1, strand.aware = T, weight.col = "score")
+promoter_atac_SM <- ScoreMatrixList(targets = list(NFR = coverage(frag.nsomeFree),
+    Mononucleosome = coverage(frag.monoNsome), Polynuclesome = coverage(frag.polyNsome)),
+    windows = mm_promoters_chr1, strand.aware = T, weight.col = "score")
 
 library(RColorBrewer)
 
 pdf("plots/promoter_ATAC_signal.pdf")
-multiHeatMatrix(promoter_atac_SM, xcoords = c(-500, 500), 
-                winsorize = c(0, 95), 
-                col = brewer.pal(7, "Blues"))
+multiHeatMatrix(promoter_atac_SM, xcoords = c(-500, 500), winsorize = c(0, 95), col = brewer.pal(7,
+    "Blues"))
 dev.off()
-
-pdf("plots/promoter_ATAC_signal_ordered.pdf")
-multiHeatMatrix(promoter_atac_SM, xcoords = c(-500, 500), 
-                winsorize = c(0, 95), 
-                col = brewer.pal(7, "Blues"),
-                order = T)
-dev.off()
-
-plotMeta(promoter_atac_SM, profile.names = names(promoter_atac_SM),
-         winsorize = c(0, 95), xcoords = c(-500, 500))
 ```
+
+```
+## quartz_off_screen 
+##                 2
+```
+
+```r
+pdf("plots/promoter_ATAC_signal_ordered.pdf")
+multiHeatMatrix(promoter_atac_SM, xcoords = c(-500, 500), winsorize = c(0, 95), col = brewer.pal(7,
+    "Blues"), order = T)
+dev.off()
+```
+
+```
+## quartz_off_screen 
+##                 2
+```
+
+```r
+plotMeta(promoter_atac_SM, profile.names = names(promoter_atac_SM), winsorize = c(0,
+    95), xcoords = c(-500, 500))
+```
+
+![](01_Fragment_length_distribution_files/figure-slidy/unnamed-chunk-6-1.png)<!-- -->
 
 # 5. Exporting the signal tracks
 
 Finally, we can export the fragments and visualise the signals in IGV.
 
-```{r, tidy = T, message=F, warning=F}
 
-export.bw(object = coverage(frag.nsomeFree), con=paste(bam_root,".nsomeFree.bw", sep = ""))
-export.bw(object = coverage(frag.monoNsome), con=paste(bam_root,".monoNsome.bw", sep = ""))
-export.bw(object = coverage(frag.polyNsome), con=paste(bam_root,".polyNsome.bw", sep = ""))
-
+```r
+export.bw(object = coverage(frag.nsomeFree), con = paste(bam_root, ".nsomeFree.bw",
+    sep = ""))
+export.bw(object = coverage(frag.monoNsome), con = paste(bam_root, ".monoNsome.bw",
+    sep = ""))
+export.bw(object = coverage(frag.polyNsome), con = paste(bam_root, ".polyNsome.bw",
+    sep = ""))
 ```
 
 # 6. Spearting different group of features
@@ -254,8 +315,8 @@ from the UCSC Genome Browser. Unfortunately, since `genomation` lacks the
 ability to plot meta-plots in different groups, we will have to get creative and 
 make our own pipline to do that.
 
-```{r, tidy=TRUE, message=F, warning=F}
 
+```r
 library(magrittr)
 
 mySession = browserSession("UCSC") 
@@ -273,7 +334,14 @@ multiHeatMatrix(promoter_atac_SM, xcoords = c(-500, 500),
                 col = brewer.pal(7, "Blues"),
                 order = T, group = factor(cpg_prom))
 dev.off()
+```
 
+```
+## quartz_off_screen 
+##                 2
+```
+
+```r
 library(tidyverse)
 
 customWinsorize <- function(x, probs = c(0, .99)){
@@ -317,6 +385,7 @@ cpgMetaPlt <- metaplotCpG %>%
                                                                      r = -20)))
 
 cpgMetaPlt
-
 ```
+
+![](01_Fragment_length_distribution_files/figure-slidy/unnamed-chunk-8-1.png)<!-- -->
 
